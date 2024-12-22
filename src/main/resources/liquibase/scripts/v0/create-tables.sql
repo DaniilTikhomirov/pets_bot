@@ -42,17 +42,35 @@ CREATE TABLE schedules
 -- changeset danil:v0-1-5
 CREATE TABLE shelter_info
 (
-    id          serial PRIMARY KEY,
-    name        TEXT NOT NULL,
-    description TEXT NOT NULL,
-    schedules_id bigint NOT NULL,
-    security_contact varchar(90),
-    address TEXT NOT NULL,
-    schema_for_road_photo_url TEXT NOT NULL,
-    safety_precautions TEXT
+    id                        serial PRIMARY KEY,
+    name                      TEXT   NOT NULL,
+    description               TEXT   NOT NULL,
+    schedules_id              bigint NOT NULL,
+    security_contact          varchar(90),
+    address                   TEXT   NOT NULL,
+    schema_for_road_photo_url TEXT   NOT NULL,
+    safety_precautions        TEXT
 );
 
 -- changeset danil:v0-1-6
-ALTER TABLE shelter_info ADD FOREIGN KEY (schedules_id) REFERENCES schedules(id);
-ALTER TABLE schedules ADD FOREIGN KEY (shelters_id) REFERENCES shelter_info(id);
+ALTER TABLE shelter_info
+    ADD FOREIGN KEY (schedules_id) REFERENCES schedules (id);
+ALTER TABLE schedules
+    ADD FOREIGN KEY (shelters_id) REFERENCES shelter_info (id);
+
+-- changeset danil:v0-1-7
+CREATE INDEX chat_id_user_index ON telegram_users (telegram_id);
+
+-- changeset danil:v0-1-8
+ALTER TABLE telegram_users
+    ADD CONSTRAINT unique_user_telegram_id UNIQUE (telegram_id);
+
+-- changeset danil:v0-1-9
+ALTER TABLE volunteers
+    ADD COLUMN second_name TEXT;
+
+
+
+
+
 
