@@ -97,8 +97,8 @@ public class MessageProvider extends TelegramLongPollingBot {
     /**
      * Отправляет сообщение с текстом и удаляет клавиатуру.
      *
-     * @param chatId     Идентификатор чата.
-     * @param text       Текст сообщения.
+     * @param chatId      Идентификатор чата.
+     * @param text        Текст сообщения.
      * @param delKeyBoard Флаг, удалять ли клавиатуру.
      * @return Отправленное сообщение.
      */
@@ -118,8 +118,8 @@ public class MessageProvider extends TelegramLongPollingBot {
     /**
      * Отправляет сообщение с текстом и инлайн клавишами.
      *
-     * @param chatId              Идентификатор чата.
-     * @param text                Текст сообщения.
+     * @param chatId               Идентификатор чата.
+     * @param text                 Текст сообщения.
      * @param inlineKeyboardMarkup Инлайн клавиши.
      * @return Отправленное сообщение.
      */
@@ -135,10 +135,10 @@ public class MessageProvider extends TelegramLongPollingBot {
     /**
      * Отправляет сообщение с текстом, инлайн клавишами и опцией удаления клавиатуры.
      *
-     * @param chatId              Идентификатор чата.
-     * @param text                Текст сообщения.
+     * @param chatId               Идентификатор чата.
+     * @param text                 Текст сообщения.
      * @param inlineKeyboardMarkup Инлайн клавиши.
-     * @param delKeyBoard         Флаг, удалять ли клавиатуру.
+     * @param delKeyBoard          Флаг, удалять ли клавиатуру.
      * @return Отправленное сообщение.
      */
     public Message putMessageWithMarkUps(long chatId, String text, InlineKeyboardMarkup inlineKeyboardMarkup, boolean delKeyBoard) {
@@ -172,10 +172,10 @@ public class MessageProvider extends TelegramLongPollingBot {
     /**
      * Отправляет контакт в чат.
      *
-     * @param chatId            Идентификатор чата.
-     * @param number            Номер телефона.
-     * @param name              Имя контакта.
-     * @param lastName          Фамилия контакта.
+     * @param chatId               Идентификатор чата.
+     * @param number               Номер телефона.
+     * @param name                 Имя контакта.
+     * @param lastName             Фамилия контакта.
      * @param inlineKeyboardMarkup Инлайн клавиши.
      */
     public void sendContact(long chatId, String number, String name, String lastName, InlineKeyboardMarkup inlineKeyboardMarkup) {
@@ -196,9 +196,9 @@ public class MessageProvider extends TelegramLongPollingBot {
     /**
      * Отправляет фотографию в чат.
      *
-     * @param chatId             Идентификатор чата.
-     * @param text               Текст сообщения.
-     * @param photoUrl           URL фотографии.
+     * @param chatId               Идентификатор чата.
+     * @param text                 Текст сообщения.
+     * @param photoUrl             URL фотографии.
      * @param inlineKeyboardMarkup Инлайн клавиши.
      */
     public void sendPhoto(long chatId, String text, String photoUrl, InlineKeyboardMarkup inlineKeyboardMarkup) {
@@ -214,6 +214,32 @@ public class MessageProvider extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
+    }
+
+    /**
+     * Отправляет фотографию в чат.
+     *
+     * @param chatId               Идентификатор чата.
+     * @param text                 Текст сообщения.
+     * @param photo                фотография.
+     * @param inlineKeyboardMarkup Инлайн клавиши.
+     */
+    public Message sendPhoto(long chatId, String text, InputFile photo, InlineKeyboardMarkup inlineKeyboardMarkup) {
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setChatId(chatId);
+        sendPhoto.setReplyMarkup(inlineKeyboardMarkup);
+        sendPhoto.setParseMode(ParseMode.HTML);
+        sendPhoto.setCaption(text);
+        sendPhoto.setPhoto(photo);
+
+        Message message = null;
+        try {
+            message = execute(sendPhoto);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+
+        return message;
     }
 
     /**
@@ -255,8 +281,8 @@ public class MessageProvider extends TelegramLongPollingBot {
     /**
      * Изменяет инлайн клавиши в сообщении.
      *
-     * @param chatID       Идентификатор чата.
-     * @param messageID    Идентификатор сообщения.
+     * @param chatID         Идентификатор чата.
+     * @param messageID      Идентификатор сообщения.
      * @param keyboardMarkup Новые инлайн клавиши.
      * @return Обновленное сообщение.
      */
@@ -280,9 +306,9 @@ public class MessageProvider extends TelegramLongPollingBot {
     /**
      * Изменяет текст в сообщении.
      *
-     * @param chatID       Идентификатор чата.
-     * @param messageID    Идентификатор сообщения.
-     * @param text         Новый текст сообщения.
+     * @param chatID    Идентификатор чата.
+     * @param messageID Идентификатор сообщения.
+     * @param text      Новый текст сообщения.
      */
     public void changeText(long chatID, int messageID, String text) {
         EditMessageText editMessageText = new EditMessageText();
@@ -311,7 +337,7 @@ public class MessageProvider extends TelegramLongPollingBot {
 
         try {
             org.telegram.telegrambots.meta.api.objects.File file = execute(getFile);
-            File localFile = new java.io.File("./data", fileName + ".jpg");
+            File localFile = new File("./data", fileName + ".jpg");
             downloadFile(file.getFilePath(), localFile);
             return localFile;
         } catch (TelegramApiException e) {

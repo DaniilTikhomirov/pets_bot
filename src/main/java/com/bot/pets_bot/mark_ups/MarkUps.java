@@ -19,11 +19,26 @@ public class MarkUps {
 
 
     /**
+     *Создание инлайн-кнопки
+     * @param text текст кнопки
+     * @param callBack калбэк
+     * @return кнопка с указаным текстом и калбэк
+     */
+    private static InlineKeyboardButton createButton(String text, String callBack) {
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText(text);
+        button.setCallbackData(callBack);
+
+        return button;
+    }
+
+
+    /**
      * Создает главное меню с кнопками для взаимодействия с пользователем.
      *
      * @return Инлайн клавиатура с кнопками главного меню.
      */
-    public static InlineKeyboardMarkup startMenu(){
+    public static InlineKeyboardMarkup startMenu() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row1 = new ArrayList<>();
@@ -32,29 +47,19 @@ public class MarkUps {
         List<InlineKeyboardButton> row4 = new ArrayList<>();
         List<InlineKeyboardButton> row5 = new ArrayList<>();
 
-        InlineKeyboardButton infoAboutShelter = new InlineKeyboardButton();
-        infoAboutShelter.setText("Узнать информацию о приюте");
-        infoAboutShelter.setCallbackData("infoAboutShelter");
+        InlineKeyboardButton infoAboutShelter = createButton("Узнать информацию о приюте", "infoAboutShelter");
         row1.add(infoAboutShelter);
 
-        InlineKeyboardButton getAnimals = new InlineKeyboardButton();
-        getAnimals.setText("Посмотреть собак");
-        getAnimals.setCallbackData("getAnimals 1");
+        InlineKeyboardButton getAnimals = createButton("Посмотреть собак", "getAnimals 1");
         row2.add(getAnimals);
 
-        InlineKeyboardButton infoAboutTakeAnimals = new InlineKeyboardButton();
-        infoAboutTakeAnimals.setText("Как взять животное из приюта");
-        infoAboutTakeAnimals.setCallbackData("infoAboutTakeAnimals");
+        InlineKeyboardButton infoAboutTakeAnimals = createButton("Как взять животное из приюта", "infoAboutTakeAnimals");
         row3.add(infoAboutTakeAnimals);
 
-        InlineKeyboardButton sendReportAboutAnimal = new InlineKeyboardButton();
-        sendReportAboutAnimal.setText("Прислать отчет о питомце");
-        sendReportAboutAnimal.setCallbackData("sendReportAboutAnimal");
+        InlineKeyboardButton sendReportAboutAnimal = createButton("Прислать отчет о питомце", "sendReportAboutAnimal");
         row4.add(sendReportAboutAnimal);
 
-        InlineKeyboardButton callVolunteer = new InlineKeyboardButton();
-        callVolunteer.setText("Позвать волонтера");
-        callVolunteer.setCallbackData("callVolunteer backToMenuDel");
+        InlineKeyboardButton callVolunteer = createButton("Позвать волонтера", "callVolunteer backToMenuDel");
         row5.add(callVolunteer);
 
         rows.add(row1);
@@ -74,13 +79,11 @@ public class MarkUps {
      * @param backCallBack Данные для обратного вызова кнопки.
      * @return Инлайн клавиатура с кнопкой "Назад".
      */
-    public static InlineKeyboardMarkup backButton(String backCallBack){
+    public static InlineKeyboardMarkup backButton(String backCallBack) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row1 = new ArrayList<>();
-        InlineKeyboardButton back = new InlineKeyboardButton();
-        back.setText("Назад");
-        back.setCallbackData(backCallBack);
+        InlineKeyboardButton back = createButton("Назад", backCallBack);
         row1.add(back);
         rows.add(row1);
         inlineKeyboardMarkup.setKeyboard(rows);
@@ -92,7 +95,7 @@ public class MarkUps {
      *
      * @return Инлайн клавиатура с кнопками для информации о приюте.
      */
-    public static InlineKeyboardMarkup InfoAboutShelterMenu(){
+    public static InlineKeyboardMarkup InfoAboutShelterMenu() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row1 = new ArrayList<>();
@@ -101,31 +104,23 @@ public class MarkUps {
         List<InlineKeyboardButton> row4 = new ArrayList<>();
         List<InlineKeyboardButton> row5 = new ArrayList<>();
 
-        InlineKeyboardButton generalInformation = new InlineKeyboardButton();
-        generalInformation.setText("Общая информация");
-        generalInformation.setCallbackData("generalInformation");
+        InlineKeyboardButton generalInformation = createButton("Общая информация", "generalInformation");
         row1.add(generalInformation);
 
-        InlineKeyboardButton securityPrecautions = new InlineKeyboardButton();
-        securityPrecautions.setText("Рекомендации о техник безопасности");
-        securityPrecautions.setCallbackData("securityPrecautions");
+        InlineKeyboardButton securityPrecautions = createButton("Рекомендации о техник безопасности",
+                "securityPrecautions");
         row2.add(securityPrecautions);
 
-        InlineKeyboardButton getContact = new InlineKeyboardButton();
-        getContact.setText("Отправить контакты");
-        getContact.setCallbackData("getContact");
+        InlineKeyboardButton getContact = createButton("Отправить контакты", "getContact");
         row3.add(getContact);
 
-        InlineKeyboardButton callVolunteer = new InlineKeyboardButton();
-        callVolunteer.setText("Позвать волонтера");
-        callVolunteer.setCallbackData("callVolunteer backToInfoAboutShelterMenuDel");
+        InlineKeyboardButton callVolunteer = createButton("Позвать волонтера",
+                "callVolunteer backToInfoAboutShelterMenuDel");
         row4.add(callVolunteer);
 
-        InlineKeyboardButton back = new InlineKeyboardButton();
-        back.setText("Назад");
-        back.setCallbackData("backToMenu");
-        row5.add(back);
+        InlineKeyboardButton back = createButton("Назад", "backToMenu");
 
+        row5.add(back);
         rows.add(row1);
         rows.add(row2);
         rows.add(row3);
@@ -143,7 +138,7 @@ public class MarkUps {
      *
      * @return Инлайн клавиатура с кнопками для информации о приюте.
      */
-    public static ReplyKeyboardMarkup getContact(){
+    public static ReplyKeyboardMarkup getContact() {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
         replyKeyboardMarkup.setSelective(true);
@@ -159,31 +154,26 @@ public class MarkUps {
         keyboardRows.add(row1);
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         return replyKeyboardMarkup;
-
     }
 
     /**
      * Создает клавиатуру для отображения страницы с животными с возможностью перехода по страницам.
      *
-     * @param page Текущая страница.
+     * @param page    Текущая страница.
      * @param animals Список животных, которые будут отображаться на странице.
      * @return Инлайн клавиатура с кнопками для отображения животных и перехода между страницами.
      */
-    public static InlineKeyboardMarkup getPageAnimal(int page, List<Animal> animals){
+    public static InlineKeyboardMarkup getPageAnimal(int page, List<Animal> animals) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInlineKeyboardButtons = new ArrayList<>();
         for (Animal animal : animals) {
             String name = animal.getName();
-            if(name == null){
+            if (name == null) {
                 name = "Имя не указано";
             }
             List<InlineKeyboardButton> rowInline = new ArrayList<>();
 
-            InlineKeyboardButton button = new InlineKeyboardButton();
-
-            button.setText(name);
-
-            button.setCallbackData("click_on_animal " + animal.getId());
+            InlineKeyboardButton button = createButton(name, "click_on_animal " + animal.getId());
 
             rowInline.add(button);
             rowsInlineKeyboardButtons.add(rowInline);
@@ -192,24 +182,16 @@ public class MarkUps {
 
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
 
-        InlineKeyboardButton next = new InlineKeyboardButton();
+        InlineKeyboardButton next = createButton("->", "next_animal " + (page + 1));
 
-        next.setText("->");
-        next.setCallbackData("next_animal " + (page + 1));
 
-        InlineKeyboardButton counter = new InlineKeyboardButton();
-        counter.setText(page + "");
-        counter.setCallbackData("counter ");
+        InlineKeyboardButton counter = createButton(page + "", "counter");
 
-        InlineKeyboardButton prev = new InlineKeyboardButton();
-        prev.setText("<-");
-        prev.setCallbackData("prev_animal " + (page - 1));
+        InlineKeyboardButton prev = createButton("<-", "prev_animal " + (page - 1));
 
         List<InlineKeyboardButton> rowInline2 = new ArrayList<>();
 
-        InlineKeyboardButton back = new InlineKeyboardButton();
-        back.setText("Назад");
-        back.setCallbackData("backToMenu");
+        InlineKeyboardButton back = createButton("Назад", "backToMenu");
 
         rowInline.add(prev);
         rowInline.add(counter);
@@ -229,7 +211,7 @@ public class MarkUps {
      *
      * @return Инлайн клавиатура с кнопками для получения правил для животных.
      */
-    public static InlineKeyboardMarkup getRuleForAnimals(){
+    public static InlineKeyboardMarkup getRuleForAnimals() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row1 = new ArrayList<>();
@@ -240,44 +222,33 @@ public class MarkUps {
         List<InlineKeyboardButton> row6 = new ArrayList<>();
         List<InlineKeyboardButton> row7 = new ArrayList<>();
 
-        InlineKeyboardButton rulesAndDocument = new InlineKeyboardButton();
-        rulesAndDocument.setText("Ваш новый друг: правила и документы для встречи");
-        rulesAndDocument.setCallbackData("rulesAndDocument");
+        InlineKeyboardButton rulesAndDocument = createButton("Ваш новый друг: правила и документы для встречи",
+                "rulesAndDocument");
         row1.add(rulesAndDocument);
 
-        InlineKeyboardButton animalGuide = new InlineKeyboardButton();
-        animalGuide.setText("Руководство по уходу за питомцем: от транспортировки до обустройства дома");
-        animalGuide.setCallbackData("animalGuide");
+        InlineKeyboardButton animalGuide = createButton("Руководство по уходу за питомцем: от транспортировки до обустройства дома",
+                "animalGuide");
         row2.add(animalGuide);
 
-        InlineKeyboardButton dogHandleAdvice = new InlineKeyboardButton();
-        dogHandleAdvice.setText("Советы по первичному обращению");
-        dogHandleAdvice.setCallbackData("dogHandleAdvice");
+        InlineKeyboardButton dogHandleAdvice = createButton("Советы по первичному обращению",
+                "dogHandleAdvice");
         row3.add(dogHandleAdvice);
 
-        InlineKeyboardButton dogHandles = new InlineKeyboardButton();
-        dogHandles.setText("Список кинологов");
-        dogHandles.setCallbackData("dogHandles 1");
+        InlineKeyboardButton dogHandles = createButton("Список кинологов", "dogHandles 1");
         row4.add(dogHandles);
 
-        InlineKeyboardButton reasonsForRefusal = new InlineKeyboardButton();
-        reasonsForRefusal.setText("Возможные причины отказа");
-        reasonsForRefusal.setCallbackData("reasonsForRefusal");
+        InlineKeyboardButton reasonsForRefusal = createButton("Возможные причины отказа",
+                "reasonsForRefusal");
         row5.add(reasonsForRefusal);
 
-        InlineKeyboardButton callVolunteer = new InlineKeyboardButton();
-        callVolunteer.setText("Позвать волонтера");
-        callVolunteer.setCallbackData("callVolunteer backToAnimalsAdviceMenuDel");
+        InlineKeyboardButton callVolunteer = createButton("Позвать волонтера",
+                "callVolunteer backToAnimalsAdviceMenuDel");
         row6.add(callVolunteer);
 
-        InlineKeyboardButton getContact = new InlineKeyboardButton();
-        getContact.setText("Отправить контакты");
-        getContact.setCallbackData("getContact");
+        InlineKeyboardButton getContact = createButton("Отправить контакты", "getContact");
         row6.add(getContact);
 
-        InlineKeyboardButton back = new InlineKeyboardButton();
-        back.setText("Назад");
-        back.setCallbackData("backToMenu");
+        InlineKeyboardButton back = createButton("Назад", "backToMenu");
         row7.add(back);
 
         rows.add(row1);
@@ -296,30 +267,26 @@ public class MarkUps {
     /**
      * Создает клавиатуру для отображения списка кинологов с возможностью перехода по страницам.
      *
-     * @param page Текущая страница.
+     * @param page        Текущая страница.
      * @param dogHandlers Список кинологов для отображения.
      * @return Инлайн клавиатура с кнопками для отображения кинологов и перехода между страницами.
      */
-    public static InlineKeyboardMarkup getPageDogHandler(int page, List<DogHandler> dogHandlers){
+    public static InlineKeyboardMarkup getPageDogHandler(int page, List<DogHandler> dogHandlers) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInlineKeyboardButtons = new ArrayList<>();
         for (DogHandler dogHandler : dogHandlers) {
             String name = dogHandler.getName();
-            if(name == null || name.isEmpty()){
+            if (name == null || name.isEmpty()) {
                 name = "Имя не указано";
             }
             String secondName = dogHandler.getSecondName();
-            if(secondName == null || secondName.isEmpty()){
+            if (secondName == null || secondName.isEmpty()) {
                 secondName = "Фамилия не указана";
             }
             List<InlineKeyboardButton> rowInline = new ArrayList<>();
 
-            InlineKeyboardButton button = new InlineKeyboardButton();
-
-            button.setText(name + " " + secondName);
-
-            button.setCallbackData("click_on_dogHandler " + dogHandler.getId());
-
+            InlineKeyboardButton button = createButton(name + " " + secondName,
+                    "click_on_dogHandler " + dogHandler.getId());
             rowInline.add(button);
             rowsInlineKeyboardButtons.add(rowInline);
 
@@ -327,24 +294,15 @@ public class MarkUps {
 
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
 
-        InlineKeyboardButton next = new InlineKeyboardButton();
+        InlineKeyboardButton next = createButton("->", "next_dogHandler " + (page + 1));
 
-        next.setText("->");
-        next.setCallbackData("next_dogHandler " + (page + 1));
+        InlineKeyboardButton counter = createButton(page + "", "counter");
 
-        InlineKeyboardButton counter = new InlineKeyboardButton();
-        counter.setText(page + "");
-        counter.setCallbackData("counter ");
-
-        InlineKeyboardButton prev = new InlineKeyboardButton();
-        prev.setText("<-");
-        prev.setCallbackData("prev_dogHandler " + (page - 1));
+        InlineKeyboardButton prev = createButton("<-", "prev_dogHandler " + (page - 1));
 
         List<InlineKeyboardButton> rowInline2 = new ArrayList<>();
 
-        InlineKeyboardButton back = new InlineKeyboardButton();
-        back.setText("Назад");
-        back.setCallbackData("backToAnimalsAdviceMenu");
+        InlineKeyboardButton back = createButton("Назад", "backToAnimalsAdviceMenu");
 
         rowInline.add(prev);
         rowInline.add(counter);
@@ -364,24 +322,20 @@ public class MarkUps {
      * Создает клавиатуру с кнопками для отправки заявки на питомца и возврата в меню.
      *
      * @param backCallBack Данные для обратного вызова кнопки "Назад".
-     * @param animalId Идентификатор животного.
-     * @param chatId Идентификатор чата пользователя.
+     * @param animalId     Идентификатор животного.
+     * @param chatId       Идентификатор чата пользователя.
      * @return Инлайн клавиатура с кнопками для отправки заявки и возврата в меню.
      */
-    public static InlineKeyboardMarkup getAnimal(String backCallBack, long animalId, long chatId){
+    public static InlineKeyboardMarkup getAnimal(String backCallBack, long animalId, long chatId) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row1 = new ArrayList<>();
         List<InlineKeyboardButton> row2 = new ArrayList<>();
 
-        InlineKeyboardButton takeAnimal = new InlineKeyboardButton();
-        takeAnimal.setText("Отправить заявку");
-        takeAnimal.setCallbackData("takeAnimal " + animalId + " " + chatId);
+        InlineKeyboardButton takeAnimal = createButton("Отправить заявку", "takeAnimal " + animalId + " " + chatId);
         row1.add(takeAnimal);
 
-        InlineKeyboardButton back = new InlineKeyboardButton();
-        back.setText("Назад");
-        back.setCallbackData(backCallBack);
+        InlineKeyboardButton back = createButton("Назад", backCallBack);
         row2.add(back);
         rows.add(row1);
         rows.add(row2);
@@ -393,28 +347,25 @@ public class MarkUps {
      * Создает клавиатуру с кнопками для принятия или отклонения заявки на животное.
      *
      * @param adoptChatId Идентификатор чата, который подал заявку.
-     * @param animalId Идентификатор животного.
-     * @param name Имя заявителя.
-     * @param contact Контактная информация заявителя.
-     * @param acceptCQ Данные для обратного вызова принятия заявки.
-     * @param rejectCQ Данные для обратного вызова отклонения заявки.
+     * @param animalId    Идентификатор животного.
+     * @param name        Имя заявителя.
+     * @param contact     Контактная информация заявителя.
+     * @param acceptCQ    Данные для обратного вызова принятия заявки.
+     * @param rejectCQ    Данные для обратного вызова отклонения заявки.
      * @return Инлайн клавиатура с кнопками для принятия или отклонения заявки.
      */
     public static InlineKeyboardMarkup acceptReject(long adoptChatId, long animalId,
                                                     String name, String contact,
-                                                    String acceptCQ, String rejectCQ){
+                                                    String acceptCQ, String rejectCQ) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row1 = new ArrayList<>();
 
-        InlineKeyboardButton accept = new InlineKeyboardButton();
-        accept.setText("Принять");
-        accept.setCallbackData(acceptCQ + " " + adoptChatId + " " + animalId + " " + name + " " + contact);
+        InlineKeyboardButton accept = createButton("Принять",
+                acceptCQ + " " + adoptChatId + " " + animalId + " " + name + " " + contact);
         row1.add(accept);
 
-        InlineKeyboardButton reject = new InlineKeyboardButton();
-        reject.setText("Отклонить");
-        reject.setCallbackData(rejectCQ + " " + adoptChatId);
+        InlineKeyboardButton reject = createButton("Отклонить", rejectCQ + " " + adoptChatId);
         row1.add(reject);
 
         rows.add(row1);
@@ -429,28 +380,24 @@ public class MarkUps {
      * Создает клавиатуру с кнопками для добавления дней или принятия заявки на питомца.
      *
      * @param adoptChatId Идентификатор чата заявителя.
-     * @param animalId Идентификатор животного.
+     * @param animalId    Идентификатор животного.
      * @return Инлайн клавиатура с кнопками для добавления дней или принятия заявки.
      */
-    public static InlineKeyboardMarkup addDaysOrAccept(long adoptChatId, long animalId){
+    public static InlineKeyboardMarkup addDaysOrAccept(long adoptChatId, long animalId) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row1 = new ArrayList<>();
         List<InlineKeyboardButton> row2 = new ArrayList<>();
 
-        InlineKeyboardButton add14Days = new InlineKeyboardButton();
-        add14Days.setText("Добавить 14 дней");
-        add14Days.setCallbackData("add14Days " + adoptChatId + " " + animalId);
+        InlineKeyboardButton add14Days = createButton("Добавить 14 дней",
+                "add14Days " + adoptChatId + " " + animalId);
         row1.add(add14Days);
 
-        InlineKeyboardButton add30Days = new InlineKeyboardButton();
-        add30Days.setText("Добавить 30 дней");
-        add30Days.setCallbackData("add30Days " + adoptChatId + " " + animalId);
+        InlineKeyboardButton add30Days = createButton("Добавить 30 дней",
+                "add30Days " + adoptChatId + " " + animalId);
         row1.add(add30Days);
 
-        InlineKeyboardButton accept = new InlineKeyboardButton();
-        accept.setText("Принять");
-        accept.setCallbackData("acceptP " + adoptChatId + " " + animalId);
+        InlineKeyboardButton accept = createButton("Принять", "acceptP " + adoptChatId + " " + animalId);
         row2.add(accept);
 
         rows.add(row1);
@@ -460,7 +407,4 @@ public class MarkUps {
 
         return inlineKeyboardMarkup;
     }
-
-
-
 }
