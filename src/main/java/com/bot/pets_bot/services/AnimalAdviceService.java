@@ -2,7 +2,10 @@ package com.bot.pets_bot.services;
 
 import com.bot.pets_bot.models.dto.AnimalsAdviceDTO;
 import com.bot.pets_bot.models.entity.AnimalsAdvice;
+import com.bot.pets_bot.models.entity.DogHandler;
 import com.bot.pets_bot.repositories.AnimalsAdviceRepository;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,10 +53,15 @@ public class AnimalAdviceService {
      * @param animalsAdvice Сущность AnimalsAdvice, которая будет обновлена в базе данных.
      * @return Обновленная сущность AnimalsAdvice.
      */
+
+    @CachePut(value = "animalAdvice", key = "#animalsAdvice.id")
     public AnimalsAdvice putAnimalAdvice(AnimalsAdvice animalsAdvice) {
-        animalsAdvice.getDogHandlers().forEach(o -> {
-            o.setAdvice(animalsAdvice);
-        });
+        List<DogHandler> dogHandlers = animalsAdvice.getDogHandlers();
+        if(dogHandlers != null && !dogHandlers.isEmpty()) {
+            dogHandlers.forEach(o -> {
+                o.setAdvice(animalsAdvice);
+            });
+        }
         return animalsAdviceRepository.save(animalsAdvice);
     }
 
@@ -63,6 +71,8 @@ public class AnimalAdviceService {
      * @param id ID совета по животным.
      * @return Сущность AnimalsAdvice, если такой совет найден, иначе null.
      */
+
+    @Cacheable("animalAdvice")
     public AnimalsAdvice getAnimalAdviceById(Long id) {
         return animalsAdviceRepository.findById(id).orElse(null);
     }

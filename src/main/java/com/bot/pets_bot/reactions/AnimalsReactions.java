@@ -26,7 +26,12 @@ public class AnimalsReactions {
     private final AdopterService adopterService;
     private final StatesStorage statesStorage;
 
-    public AnimalsReactions(AnimalService animalService, MessageProvider messageProvider, TelegramUserService telegramUserService, VolunteersService volunteersService, AdopterService adopterService, StatesStorage statesStorage) {
+    public AnimalsReactions(AnimalService animalService,
+                            MessageProvider messageProvider,
+                            TelegramUserService telegramUserService,
+                            VolunteersService volunteersService,
+                            AdopterService adopterService,
+                            StatesStorage statesStorage) {
         this.animalService = animalService;
         this.messageProvider = messageProvider;
         this.telegramUserService = telegramUserService;
@@ -43,25 +48,37 @@ public class AnimalsReactions {
      * @param page Номер страницы с животными.
      * @param del Указывает, нужно ли удалять старое сообщение перед отправкой нового.
      */
-    public void putAnimals(long chatId, int messageId, int page, boolean del) {
+    public void putAnimals(long chatId, int messageId, int page, boolean del, String prefix) {
         if (page < 1){
             return;
         }
-        List<Animal> animals = animalService.getAnimalsPage(page, 5);
+        List<Animal> animals = animalService.getAnimalsPage(page, 5, prefix.equals("cat"));
         if (animals.isEmpty()) {
             return;
         }
+
+        String emoji = "🐶";
+        String animal = "собак";
+        String animal1 = "собаку";
+
+        if(prefix.equals("cat")){
+            emoji = "\uD83D\uDC31";
+            animal = "кошек";
+            animal1 = "кошку";
+        }
+
+        String info = String.format("🐾 <b>Добро пожаловать в меню приюта для %s!</b> %s\n" +
+                "Выберите %s из списка ниже, чтобы узнать о ней больше:", animal, emoji, animal1);
+
         if (del) {
             messageProvider.deleteMessage(chatId, messageId);
-            messageProvider.putMessageWithMarkUps(chatId, "🐾 <b>Добро пожаловать в меню приюта для собак!</b> 🐶\n" +
-                    "Выберите собаку из списка ниже, чтобы узнать о ней больше:", MarkUps.getPageAnimal(page,
-                    animals));
+            messageProvider.putMessageWithMarkUps(chatId, info, MarkUps.getPageAnimal(page,
+                    animals, prefix));
             return;
         }
-        messageProvider.changeText(chatId, messageId, "🐾 <b>Добро пожаловать в меню приюта для собак!</b> 🐶\n" +
-                "Выберите собаку из списка ниже, чтобы узнать о ней больше:");
+        messageProvider.changeText(chatId, messageId, info);
         messageProvider.changeInline(chatId, messageId, MarkUps.getPageAnimal(page,
-                animals));
+                animals, prefix));
     }
 
     /**
@@ -71,11 +88,11 @@ public class AnimalsReactions {
      * @param messageId Идентификатор сообщения, которое будет изменено.
      * @param animalId Идентификатор животного, информацию о котором нужно вывести.
      */
-    public void infoAboutAnimal(long chatId, int messageId, long animalId) {
+    public void infoAboutAnimal(long chatId, int messageId, long animalId, String prefix) {
         Animal animal = animalService.getAnimalById(animalId);
         if (animal == null) {
             messageProvider.changeText(chatId, messageId, "Возникла Ошибка");
-            messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToAnimals 1"));
+            messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToAnimals 1", prefix));
             return;
         }
 
@@ -116,13 +133,13 @@ public class AnimalsReactions {
         if (photoUrl == null) {
             messageProvider.changeText(chatId, messageId, info);
             messageProvider.changeInline(chatId, messageId, MarkUps.
-                    getAnimal("backToAnimals 1", animalId, chatId));
+                    getAnimal("backToAnimals 1", animalId, chatId, prefix));
             return;
         }
 
         messageProvider.deleteMessage(chatId, messageId);
         messageProvider.sendPhoto(chatId, info, animal.getPhotoUrl(), MarkUps.
-                getAnimal("backToAnimalsDel 1", animalId, chatId));
+                getAnimal("backToAnimalsDel 1", animalId, chatId, prefix));
     }
 
     /**
@@ -132,7 +149,7 @@ public class AnimalsReactions {
      * @param messageId Идентификатор сообщения, которое будет удалено.
      * @param adoptChatId Идентификатор чата, куда отправляется заявка.
      */
-    public void reactionOnTakeAnimal(long chatId, int messageId, long adoptChatId) {
+    public void reactionOnTakeAnimal(long chatId, int messageId, long adoptChatId, String prefix) {
         messageProvider.deleteMessage(chatId, messageId);
         List<Volunteers> volunteers = volunteersService.getVolunteers();
         if (volunteers.isEmpty()) {
@@ -155,7 +172,7 @@ public class AnimalsReactions {
                         telegramUser.getName(),
                         telegramUser.getContact(),
                         "acceptA",
-                        "rejectA"
+                        "rejectA", prefix
                 ));
         messageProvider.putMessage(chatId, "Ваша заявка отправлена на рассмотрение!");
     }

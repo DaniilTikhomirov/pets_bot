@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AnimalsAdviceCallBack implements CallBackResponsive{
+public class AnimalsAdviceCallBack implements CallBackResponsive {
     private final MessageProvider messageProvider;
     private final AnimalAdviceReactions animalAdviceReactions;
 
-    @Value("${my.animals.advice.id}")
-    private long ANIMALS_ADVICE_ID;
+    @Value("${my.dog.advice.id}")
+    private long DOG_ADVICE_ID;
+
+    @Value("${my.cat.advice.id}")
+    private long CAT_ADVICE_ID;
 
     public AnimalsAdviceCallBack(MessageProvider messageProvider,
                                  AnimalAdviceReactions animalAdviceReactions) {
@@ -21,45 +24,81 @@ public class AnimalsAdviceCallBack implements CallBackResponsive{
     }
 
     @Override
-    public void callback(long chatId, int messageId, String[] call_split_data) {
+    public void callback(long chatId, int messageId, String[] call_split_data, String prefix) {
         switch (call_split_data[0]) {
             case "infoAboutTakeAnimals", "backToAnimalsAdviceMenu" -> {
                 messageProvider.changeText(chatId, messageId, "Выберете, что вы хотите узнать");
-                messageProvider.changeInline(chatId, messageId, MarkUps.getRuleForAnimals());
+                messageProvider.changeInline(chatId, messageId, MarkUps.getRuleForAnimals(prefix));
             }
             case "rulesAndDocument" -> {
-                animalAdviceReactions.reactionsOnRulesAndDocument(chatId, messageId, ANIMALS_ADVICE_ID);
+                if (prefix.equals("dog")) {
+                    animalAdviceReactions.reactionsOnRulesAndDocument(chatId, messageId, DOG_ADVICE_ID, prefix);
+                } else if (prefix.equals("cat")) {
+                    animalAdviceReactions.reactionsOnRulesAndDocument(chatId, messageId, CAT_ADVICE_ID, prefix);
+                }
             }
 
             case "animalGuide" -> {
-               animalAdviceReactions.reactionOnAnimalGuide(chatId, messageId, ANIMALS_ADVICE_ID);
+                if (prefix.equals("dog")) {
+                    animalAdviceReactions.reactionOnAnimalGuide(chatId, messageId, DOG_ADVICE_ID, prefix);
+                } else if (prefix.equals("cat")) {
+                    animalAdviceReactions.reactionOnAnimalGuide(chatId, messageId, CAT_ADVICE_ID, prefix);
+                }
+
             }
 
             case "dogHandleAdvice" -> {
-                animalAdviceReactions.reactionsOnDogHandleAdvice(chatId, messageId, ANIMALS_ADVICE_ID);
+                if (prefix.equals("dog")) {
+                    animalAdviceReactions.reactionsOnDogHandleAdvice(chatId, messageId, DOG_ADVICE_ID, prefix);
+                } else if (prefix.equals("cat")) {
+                    animalAdviceReactions.reactionsOnDogHandleAdvice(chatId, messageId, CAT_ADVICE_ID, prefix);
+                }
+
+
             }
 
             case "reasonsForRefusal" -> {
-                animalAdviceReactions.reactionReasonsForRefusal(chatId, messageId, ANIMALS_ADVICE_ID);
+
+                if (prefix.equals("dog")) {
+                    animalAdviceReactions.reactionReasonsForRefusal(chatId, messageId, DOG_ADVICE_ID, prefix);
+                } else if (prefix.equals("cat")) {
+                    animalAdviceReactions.reactionReasonsForRefusal(chatId, messageId, CAT_ADVICE_ID, prefix);
+                }
+
             }
 
             case "dogHandles", "next_dogHandler", "prev_dogHandler", "backToDogHandlers" -> {
-                animalAdviceReactions.putDogHandler(chatId, messageId, Integer.parseInt(call_split_data[1]),
-                        ANIMALS_ADVICE_ID,false);
+
+                if (prefix.equals("dog")) {
+                    animalAdviceReactions.putDogHandler(chatId, messageId, Integer.parseInt(call_split_data[1]),
+                            DOG_ADVICE_ID, false, prefix);
+                } else if (prefix.equals("cat")) {
+                    animalAdviceReactions.putDogHandler(chatId, messageId, Integer.parseInt(call_split_data[1]),
+                            CAT_ADVICE_ID, false, prefix);
+                }
+
             }
 
             case "click_on_dogHandler" -> {
-                animalAdviceReactions.infoAboutDogHandler(chatId, messageId, Long.parseLong(call_split_data[1]));
+                animalAdviceReactions.infoAboutDogHandler(chatId, messageId, Long.parseLong(call_split_data[1]), prefix);
             }
 
             case "backToAnimalsAdviceMenuDel" -> {
                 messageProvider.deleteMessage(chatId, messageId);
                 messageProvider.putMessageWithMarkUps(chatId, "Выберете, что вы хотите узнать",
-                        MarkUps.getRuleForAnimals());
+                        MarkUps.getRuleForAnimals(prefix));
             }
 
             case "backToDogHandlersDel" -> {
-                animalAdviceReactions.putDogHandler(chatId, messageId, Integer.parseInt(call_split_data[1]), ANIMALS_ADVICE_ID,true);
+
+                if (prefix.equals("dog")) {
+                    animalAdviceReactions.putDogHandler(chatId, messageId,
+                            Integer.parseInt(call_split_data[1]), DOG_ADVICE_ID, true, prefix);
+                } else if (prefix.equals("cat")) {
+                    animalAdviceReactions.putDogHandler(chatId, messageId,
+                            Integer.parseInt(call_split_data[1]), CAT_ADVICE_ID, true, prefix);
+                }
+
             }
         }
     }

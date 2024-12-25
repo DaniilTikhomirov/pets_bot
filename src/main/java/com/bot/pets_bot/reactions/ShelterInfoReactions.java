@@ -28,10 +28,10 @@ public class ShelterInfoReactions {
      * @param chatId идентификатор чата
      * @param messageId идентификатор сообщения
      */
-    public void reactionOnInfoAboutShelter(long chatId, int messageId, String INFO_ABOUT_SHELTER) {
+    public void reactionOnInfoAboutShelter(long chatId, int messageId, String INFO_ABOUT_SHELTER, String prefix) {
 
         messageProvider.changeText(chatId, messageId, INFO_ABOUT_SHELTER);
-        messageProvider.changeInline(chatId, messageId, MarkUps.InfoAboutShelterMenu());
+        messageProvider.changeInline(chatId, messageId, MarkUps.InfoAboutShelterMenu(prefix));
     }
 
     /**
@@ -44,7 +44,7 @@ public class ShelterInfoReactions {
      * @param chatId идентификатор чата
      * @param messageId идентификатор сообщения
      */
-    public void reactionOnGeneralInformation(long chatId, int messageId, long SHELTER_ID) {
+    public void reactionOnGeneralInformation(long chatId, int messageId, long SHELTER_ID, String prefix) {
         ShelterInfo shelterInfo = shelterInfoService.getShelterInfoById(SHELTER_ID);
         if (shelterInfo == null) {
             messageProvider.putMessage(chatId, "Возникла ошибка попробуйте позже /start");
@@ -86,7 +86,7 @@ public class ShelterInfoReactions {
         messageProvider.deleteMessage(chatId, messageId);
 
         messageProvider.sendPhoto(chatId, info, shelterInfo.getSchemaForRoadPhotoUrl(),
-                MarkUps.backButton("backToInfoAboutShelterMenuDel"));
+                MarkUps.backButton("backToInfoAboutShelterMenuDel", prefix));
 
 
     }
@@ -101,7 +101,7 @@ public class ShelterInfoReactions {
      * @param chatId идентификатор чата
      * @param messageId идентификатор сообщения
      */
-    public void reactionOnSecurityPrecautions(long chatId, int messageId, long SHELTER_ID) {
+    public void reactionOnSecurityPrecautions(long chatId, int messageId, long SHELTER_ID, String prefix) {
         ShelterInfo shelterInfo = shelterInfoService.getShelterInfoById(SHELTER_ID);
         if (shelterInfo == null) {
             messageProvider.putMessage(chatId, "Возникла ошибка попробуйте позже /start");
@@ -122,7 +122,7 @@ public class ShelterInfoReactions {
 
 
         messageProvider.changeText(chatId, messageId, info);
-        messageProvider.changeInline(chatId, messageId, MarkUps.backButton("BackToInfoAboutShelterMenu"));
+        messageProvider.changeInline(chatId, messageId, MarkUps.backButton("BackToInfoAboutShelterMenu", prefix));
 
     }
 }

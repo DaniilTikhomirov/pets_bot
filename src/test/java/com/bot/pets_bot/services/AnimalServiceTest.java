@@ -126,17 +126,19 @@ public class AnimalServiceTest {
     public void testGetAnimalsPage_ValidPage() {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<Animal> page = new PageImpl<>(List.of(animal));
-        when(animalRepository.findAllByAdopterIsNullAndTakeIsFalse(pageRequest)).thenReturn(page);
+        when(animalRepository.findAllByAdopterIsNullAndTakeIsFalseAndCat(pageRequest, false)).thenReturn(page);
 
-        List<Animal> animals = animalService.getAnimalsPage(1, 10);
+        List<Animal> animals = animalService.getAnimalsPage(1, 10, false);
         Assertions.assertEquals(1, animals.size());
-        Assertions.assertEquals(animal.getName(), animals.get(0).getName());
-        verify(animalRepository, times(1)).findAllByAdopterIsNullAndTakeIsFalse(pageRequest);
+        Assertions.assertEquals(animal.getName(), animals.getFirst().getName());
+        verify(animalRepository, times(1)).
+                findAllByAdopterIsNullAndTakeIsFalseAndCat(pageRequest, false);
     }
 
     @Test
     public void testGetAnimalsPage_InvalidPage() {
-        Assertions.assertThrows(BadPage.class, () -> animalService.getAnimalsPage(0, 10));
-        verify(animalRepository, times(0)).findAllByAdopterIsNullAndTakeIsFalse(any(PageRequest.class));
+        Assertions.assertThrows(BadPage.class, () -> animalService.getAnimalsPage(0, 10, false));
+        verify(animalRepository, times(0)).
+                findAllByAdopterIsNullAndTakeIsFalseAndCat(any(PageRequest.class), anyBoolean());
     }
 }

@@ -111,11 +111,11 @@ public class AnimalService {
      * @throws BadPage Если номер страницы меньше 1.
      */
     @Transactional
-    public List<Animal> getAnimalsPage(int page, int size) {
+    public List<Animal> getAnimalsPage(int page, int size, boolean cat) {
         if (page < 1) {
             throw new BadPage("your page number is less than 1");
         }
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        return animalRepository.findAllByAdopterIsNullAndTakeIsFalse(pageRequest).getContent();
+        return animalRepository.findAllByAdopterIsNullAndTakeIsFalseAndCat(pageRequest, cat).getContent();
     }
 }

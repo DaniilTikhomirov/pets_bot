@@ -21,3 +21,6 @@ CREATE TABLE reports(
 
 -- changeset danil:v0-3-2
 ALTER TABLE reports ALTER COLUMN photo_url DROP NOT NULL;
+
+-- changeset danil:v0-3-3
+ALTER TABLE animals ADD COLUMN cat BOOLEAN DEFAULT(FALSE);

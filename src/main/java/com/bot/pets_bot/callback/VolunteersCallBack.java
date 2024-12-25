@@ -32,10 +32,10 @@ public class VolunteersCallBack implements CallBackResponsive {
     }
 
     @Override
-    public void callback(long chatId, int messageId, String[] call_split_data) {
+    public void callback(long chatId, int messageId, String[] call_split_data, String prefix) {
         switch (call_split_data[0]) {
             case "callVolunteer" -> {
-                volunteersReactions.reactionOnCallVolunteer(chatId, messageId, call_split_data[1]);
+                volunteersReactions.reactionOnCallVolunteer(chatId, messageId, call_split_data[1], prefix);
             }
 
             case "acceptA" -> {

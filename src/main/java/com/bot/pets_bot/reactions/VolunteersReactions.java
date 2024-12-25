@@ -18,7 +18,10 @@ public class VolunteersReactions {
     private final AdopterService adopterService;
     private final AnimalService animalService;
 
-    public VolunteersReactions(MessageProvider messageProvider, VolunteersService volunteersService, AdopterService adopterService, AnimalService animalService) {
+    public VolunteersReactions(MessageProvider messageProvider,
+                               VolunteersService volunteersService,
+                               AdopterService adopterService,
+                               AnimalService animalService) {
         this.messageProvider = messageProvider;
         this.volunteersService = volunteersService;
         this.adopterService = adopterService;
@@ -36,16 +39,16 @@ public class VolunteersReactions {
      * @param messageId идентификатор сообщения
      * @param back строка с ссылкой для возврата в предыдущее меню
      */
-    public void reactionOnCallVolunteer(long chatId, int messageId, String back) {
+    public void reactionOnCallVolunteer(long chatId, int messageId, String back, String prefix) {
         messageProvider.deleteMessage(chatId, messageId);
         Volunteers volunteers = volunteersService.getRandomVolunteer();
         if (volunteers != null && volunteers.getContact() != null) {
             messageProvider.sendContact(chatId, volunteers.getContact(), volunteers.getName(), volunteers.getSecondName(),
-                    MarkUps.backButton(back));
+                    MarkUps.backButton(back, prefix));
             return;
         }
         messageProvider.putMessageWithMarkUps(chatId, "на данный момент нет свободных волонтеров",
-                MarkUps.backButton(back));
+                MarkUps.backButton(back, prefix));
     }
 
     /**

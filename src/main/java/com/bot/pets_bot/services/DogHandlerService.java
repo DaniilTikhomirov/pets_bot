@@ -5,6 +5,8 @@ import com.bot.pets_bot.exeptions.S3Error;
 import com.bot.pets_bot.models.entity.DogHandler;
 import com.bot.pets_bot.repositories.DogHandlerRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +44,8 @@ public class DogHandlerService {
      * @param id ID кинолога.
      * @return Сущность DogHandler (кинолог), если найден, иначе null.
      */
+
+    @Cacheable("dogHandlers")
     public DogHandler getDogHandler(long id) {
         return dogHandlerRepository.findById(id).orElse(null);
     }
@@ -55,8 +59,10 @@ public class DogHandlerService {
      * @return Обновленная сущность DogHandler с ссылкой на фото.
      * @throws S3Error Если произошла ошибка при загрузке файла в S3 хранилище.
      */
+
+    @CachePut(value = "dogHandlers", key = "#dogId")
     public DogHandler addPhoto(MultipartFile file, long dogId) {
-        DogHandler dogHandler = getDogHandler(dogId);
+        DogHandler dogHandler = dogHandlerRepository.findById(dogId).orElse(null);
         if (dogHandler == null) {
             return null;
         }

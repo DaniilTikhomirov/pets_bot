@@ -15,16 +15,6 @@ public class ShelterInfoCallBack implements CallBackResponsive{
     private final MessageProvider messageProvider;
     private final TelegramUserService telegramUserService;
 
-    @Value("${my.shelter.id}")
-    private long SHELTER_ID;
-
-    public ShelterInfoCallBack(ShelterInfoReactions shelterInfoReactions, MessageProvider messageProvider, TelegramUserService telegramUserService) {
-        this.shelterInfoReactions = shelterInfoReactions;
-        this.messageProvider = messageProvider;
-        this.telegramUserService = telegramUserService;
-    }
-
-
     /**
      * Информация о приюте, которая отправляется пользователям.
      */
@@ -38,34 +28,61 @@ public class ShelterInfoCallBack implements CallBackResponsive{
             Мы стремимся сделать мир добрее, помогая тем, кто не может помочь себе сам. ❤️""";
 
 
+    @Value("${my.shelter.dog.id}")
+    private long DOG_SHELTER_ID;
+
+    @Value("${my.shelter.cat.id}")
+    private long CAT_SHELTER_ID;
+
+    public ShelterInfoCallBack(ShelterInfoReactions shelterInfoReactions,
+                               MessageProvider messageProvider,
+                               TelegramUserService telegramUserService) {
+        this.shelterInfoReactions = shelterInfoReactions;
+        this.messageProvider = messageProvider;
+        this.telegramUserService = telegramUserService;
+    }
+
+
+
     @Override
-    public void callback(long chatId, int messageId, String[] call_split_data) {
+    public void callback(long chatId, int messageId, String[] call_split_data, String prefix) {
         switch (call_split_data[0]){
             case "infoAboutShelter", "BackToInfoAboutShelterMenu" -> {
-                shelterInfoReactions.reactionOnInfoAboutShelter(chatId, messageId, INFO_ABOUT_SHELTER);
+                shelterInfoReactions.reactionOnInfoAboutShelter(chatId, messageId, INFO_ABOUT_SHELTER, prefix);
             }
 
             case "generalInformation" -> {
-                shelterInfoReactions.reactionOnGeneralInformation(chatId, messageId, SHELTER_ID);
+                if(prefix.equals("cat")){
+                    shelterInfoReactions.reactionOnGeneralInformation(chatId, messageId, CAT_SHELTER_ID, prefix);
+                }else if(prefix.equals("dog")){
+                    shelterInfoReactions.reactionOnGeneralInformation(chatId, messageId, DOG_SHELTER_ID, prefix);
+                }
+
             }
 
             case "securityPrecautions" -> {
-                shelterInfoReactions.reactionOnSecurityPrecautions(chatId, messageId, SHELTER_ID);
+
+                if(prefix.equals("cat")){
+                    shelterInfoReactions.reactionOnSecurityPrecautions(chatId, messageId, CAT_SHELTER_ID, prefix);
+                } else if (prefix.equals("dog")) {
+                    shelterInfoReactions.reactionOnSecurityPrecautions(chatId, messageId, DOG_SHELTER_ID, prefix);
+                }
+
             }
             case "backToInfoAboutShelterMenuDel" -> {
                 messageProvider.deleteMessage(chatId, messageId);
-                messageProvider.putMessageWithMarkUps(chatId, INFO_ABOUT_SHELTER, MarkUps.InfoAboutShelterMenu());
+                messageProvider.putMessageWithMarkUps(chatId, INFO_ABOUT_SHELTER, MarkUps.InfoAboutShelterMenu(prefix));
             }
 
             case "backToMenuDel" -> {
                 messageProvider.deleteMessage(chatId, messageId);
                 messageProvider.putMessageWithMarkUps(chatId, "Выберите нужный раздел",
-                        MarkUps.startMenu());
+                        MarkUps.startMenu(prefix));
             }
 
             case "backToMenu" -> {
                 messageProvider.changeText(chatId, messageId, "Выберите нужный раздел");
-                messageProvider.changeInline(chatId, messageId, MarkUps.startMenu());
+                messageProvider.changeInline(chatId, messageId, MarkUps.startMenu(prefix));
             }
 
 
@@ -73,7 +90,7 @@ public class ShelterInfoCallBack implements CallBackResponsive{
     }
 
     public void addContact(long chatId, String phoneNumber){
-        messageProvider.putMessageWithMarkUps(chatId, INFO_ABOUT_SHELTER, MarkUps.InfoAboutShelterMenu(),
+        messageProvider.putMessageWithMarkUps(chatId, "Выберете приют", MarkUps.catOrDog(),
                 true);
 
         TelegramUser telegramUser = telegramUserService.getTelegramUserByTelegramId(chatId);

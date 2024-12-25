@@ -72,6 +72,9 @@ public class Animal {
     @Column(name = "take", columnDefinition = "boolean default(false)")
     private boolean take;
 
+    @Column(name = "cat", columnDefinition = "boolean default(false)")
+    private boolean cat;
+
     /**
      * Статус животного, связанный с сущностью {@link Status}.
      */
@@ -107,6 +110,7 @@ public class Animal {
         animal.setColor(dto.getColor());
         animal.setAge(dto.getAge());
         animal.setKind(dto.getKind());
+        animal.setCat(dto.isCat());
         return animal;
     }
 }

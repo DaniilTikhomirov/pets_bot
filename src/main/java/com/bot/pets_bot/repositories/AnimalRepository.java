@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AnimalRepository extends JpaRepository<Animal, Long> {
-    Page<Animal> findAllByAdopterIsNullAndTakeIsFalse(Pageable pageable);
+    Page<Animal> findAllByAdopterIsNullAndTakeIsFalseAndCat(Pageable pageable, boolean cat);
 }

@@ -39,4 +39,9 @@ public class AnimalDTO {
      * Вид или порода животного.
      */
     private String kind;
+
+    /**
+     * кошка или собака?.
+     */
+    private boolean cat;
 }

@@ -18,18 +18,18 @@ public class AnimalsCallBack implements CallBackResponsive{
     }
 
     @Override
-    public void callback(long chatId, int messageId, String[] call_split_data) {
+    public void callback(long chatId, int messageId, String[] call_split_data, String prefix) {
         switch (call_split_data[0]) {
             case "getAnimals", "next_animal", "prev_animal", "backToAnimals" -> {
-                animalsReactions.putAnimals(chatId, messageId, Integer.parseInt(call_split_data[1]), false);
+                animalsReactions.putAnimals(chatId, messageId, Integer.parseInt(call_split_data[1]), false, prefix);
             }
 
             case "click_on_animal" -> {
-                animalsReactions.infoAboutAnimal(chatId, messageId, Long.parseLong(call_split_data[1]));
+                animalsReactions.infoAboutAnimal(chatId, messageId, Long.parseLong(call_split_data[1]), prefix);
             }
 
             case "takeAnimal" -> {
-                animalsReactions.reactionOnTakeAnimal(chatId, messageId, Long.parseLong(call_split_data[1]));
+                animalsReactions.reactionOnTakeAnimal(chatId, messageId, Long.parseLong(call_split_data[1]), prefix);
             }
 
             case "sendReportAboutAnimal" -> {
@@ -48,7 +48,7 @@ public class AnimalsCallBack implements CallBackResponsive{
             }
 
             case "backToAnimalsDel" -> {
-                animalsReactions.putAnimals(chatId, messageId, Integer.parseInt(call_split_data[1]), true);
+                animalsReactions.putAnimals(chatId, messageId, Integer.parseInt(call_split_data[1]), true, prefix);
             }
         }
     }

@@ -90,8 +90,11 @@ public class AnimalController {
             int page,
             @RequestParam("size")
             @Parameter(description = "Размер страницы (количество животных на странице).")
-            int size) {
-        return ResponseEntity.ok(animalService.getAnimalsPage(page, size));
+            int size,
+            @RequestParam("cat")
+            @Parameter(description = "искать котов ? если нет то собак")
+            boolean cat) {
+        return ResponseEntity.ok(animalService.getAnimalsPage(page, size, cat));
     }
 
     /**

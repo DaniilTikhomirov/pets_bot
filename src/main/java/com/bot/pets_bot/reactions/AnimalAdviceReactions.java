@@ -18,7 +18,9 @@ public class AnimalAdviceReactions {
     private final MessageProvider messageProvider;
     private final DogHandlerService dogHandlerService;
 
-    public AnimalAdviceReactions(AnimalAdviceService animalAdviceService, MessageProvider messageProvider, DogHandlerService dogHandlerService) {
+    public AnimalAdviceReactions(AnimalAdviceService animalAdviceService,
+                                 MessageProvider messageProvider,
+                                 DogHandlerService dogHandlerService) {
         this.animalAdviceService = animalAdviceService;
         this.messageProvider = messageProvider;
         this.dogHandlerService = dogHandlerService;
@@ -36,10 +38,10 @@ public class AnimalAdviceReactions {
      * @param animalsAdvice объект советов для животных
      * @return true, если произошла ошибка, иначе false
      */
-    private boolean reactionOnError(long chatId, int messageId, AnimalsAdvice animalsAdvice) {
+    private boolean reactionOnError(long chatId, int messageId, AnimalsAdvice animalsAdvice, String prefix) {
         if (animalsAdvice == null) {
             messageProvider.changeText(chatId, messageId, "Произошла ошибка! Попробуйте позже");
-            messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToAnimalsAdviceMenu"));
+            messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToAnimalsAdviceMenu", prefix));
             return true;
         }
 
@@ -56,9 +58,9 @@ public class AnimalAdviceReactions {
      * @param chatId идентификатор чата
      * @param messageId идентификатор сообщения
      */
-    public void reactionsOnRulesAndDocument(long chatId, int messageId, long ANIMALS_ADVICE_ID) {
+    public void reactionsOnRulesAndDocument(long chatId, int messageId, long ANIMALS_ADVICE_ID, String prefix) {
         AnimalsAdvice animalsAdvice = animalAdviceService.getAnimalAdviceById(ANIMALS_ADVICE_ID);
-        if (reactionOnError(chatId, messageId, animalsAdvice)) {
+        if (reactionOnError(chatId, messageId, animalsAdvice, prefix)) {
             return;
         }
 
@@ -72,7 +74,7 @@ public class AnimalAdviceReactions {
                 animalsAdvice.getDocumentsForAnimal().trim());
 
         messageProvider.changeText(chatId, messageId, info);
-        messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToAnimalsAdviceMenu"));
+        messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToAnimalsAdviceMenu", prefix));
     }
 
     /**
@@ -85,10 +87,16 @@ public class AnimalAdviceReactions {
      * @param chatId идентификатор чата
      * @param messageId идентификатор сообщения
      */
-    public void reactionOnAnimalGuide(long chatId, int messageId, long ANIMALS_ADVICE_ID) {
+    public void reactionOnAnimalGuide(long chatId, int messageId, long ANIMALS_ADVICE_ID, String prefix) {
         AnimalsAdvice animalsAdvice = animalAdviceService.getAnimalAdviceById(ANIMALS_ADVICE_ID);
-        if (reactionOnError(chatId, messageId, animalsAdvice)) {
+        if (reactionOnError(chatId, messageId, animalsAdvice, prefix)) {
             return;
+        }
+
+        String animal = "щенка";
+
+        if (prefix.equals("cat")){
+            animal = "котенка";
         }
 
         String info = String.format(
@@ -96,7 +104,7 @@ public class AnimalAdviceReactions {
                          🎉 1. Рекомендации по транспортировке вашего пушистого друга:
                         %s
                            \s
-                         🐾 2. Как сделать дом идеальным для щенка? Вот что нужно учесть:
+                         🐾 2. Как сделать дом идеальным для %s? Вот что нужно учесть:
                         %s
                            \s
                          🏡 3. Рекомендации по обустройству дома для вашего взрослого питомца:
@@ -106,6 +114,7 @@ public class AnimalAdviceReactions {
                         %s
                         \s""",
                 animalsAdvice.getRecommendationForMoveAnimal().trim(),
+                animal,
                 animalsAdvice.getRecommendationForArrangementForPuppy().trim(),
                 animalsAdvice.getRecommendationForArrangementForDog().trim(),
                 animalsAdvice.getRecommendationForArrangementForDisability().trim()
@@ -113,7 +122,7 @@ public class AnimalAdviceReactions {
 
 
         messageProvider.changeText(chatId, messageId, info);
-        messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToAnimalsAdviceMenu"));
+        messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToAnimalsAdviceMenu", prefix));
     }
 
     /**
@@ -126,20 +135,31 @@ public class AnimalAdviceReactions {
      * @param chatId идентификатор чата
      * @param messageId идентификатор сообщения
      */
-    public void reactionsOnDogHandleAdvice(long chatId, int messageId, long ANIMALS_ADVICE_ID) {
+    public void reactionsOnDogHandleAdvice(long chatId, int messageId, long ANIMALS_ADVICE_ID, String prefix) {
         AnimalsAdvice animalsAdvice = animalAdviceService.getAnimalAdviceById(ANIMALS_ADVICE_ID);
-        if (reactionOnError(chatId, messageId, animalsAdvice)) {
+        if (reactionOnError(chatId, messageId, animalsAdvice, prefix)) {
             return;
+        }
+
+        String emoji = "🐶";
+        String animal = "собакой";
+
+        if (prefix.equals("cat")){
+            emoji = "\uD83D\uDC31";
+            animal = "кошечкой";
         }
 
         String info = String.format(
                 """
-                        🐶✨ Советы от кинолога по первичному общению с вашей новой собакой:
+                        %s✨ Советы от кинолога по первичному общению с вашей новой %s:
                         %s
-                        """, animalsAdvice.getDogHandlerAdvice().trim());
+                        """,
+                emoji,
+                animal,
+                animalsAdvice.getDogHandlerAdvice().trim());
 
         messageProvider.changeText(chatId, messageId, info);
-        messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToAnimalsAdviceMenu"));
+        messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToAnimalsAdviceMenu", prefix));
 
     }
 
@@ -149,9 +169,9 @@ public class AnimalAdviceReactions {
      * @param chatId Идентификатор чата, в который будет отправлено сообщение.
      * @param messageId Идентификатор сообщения, которое будет изменено.
      */
-    public void reactionReasonsForRefusal(long chatId, int messageId, long ANIMALS_ADVICE_ID) {
+    public void reactionReasonsForRefusal(long chatId, int messageId, long ANIMALS_ADVICE_ID, String prefix) {
         AnimalsAdvice animalsAdvice = animalAdviceService.getAnimalAdviceById(ANIMALS_ADVICE_ID);
-        if (reactionOnError(chatId, messageId, animalsAdvice)) {
+        if (reactionOnError(chatId, messageId, animalsAdvice, prefix)) {
             return;
         }
 
@@ -159,14 +179,14 @@ public class AnimalAdviceReactions {
                 """
                         🚫 <b>Причины отказа в передаче животного:</b>
                         Бот может предоставить вам список возможных причин, по которым вам могут отказать \
-                        в забирании собаки из приюта. Эти причины могут включать:
+                        в забирании животного из приюта. Эти причины могут включать:
                         
                         %s""",
                 animalsAdvice.getReasonsForRefusal().trim()
         );
 
         messageProvider.changeText(chatId, messageId, info);
-        messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToAnimalsAdviceMenu"));
+        messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToAnimalsAdviceMenu", prefix));
     }
 
     /**
@@ -177,9 +197,9 @@ public class AnimalAdviceReactions {
      * @param page Номер страницы с кинологами.
      * @param del Указывает, нужно ли удалять старое сообщение перед отправкой нового.
      */
-    public void putDogHandler(long chatId, int messageId, int page, long ANIMALS_ADVICE_ID, boolean del) {
+    public void putDogHandler(long chatId, int messageId, int page, long ANIMALS_ADVICE_ID, boolean del, String prefix) {
         AnimalsAdvice animalsAdvice = animalAdviceService.getAnimalAdviceById(ANIMALS_ADVICE_ID);
-        if (reactionOnError(chatId, messageId, animalsAdvice)) {
+        if (reactionOnError(chatId, messageId, animalsAdvice, prefix)) {
             return;
         }
 
@@ -196,13 +216,13 @@ public class AnimalAdviceReactions {
             messageProvider.deleteMessage(chatId, messageId);
             messageProvider.putMessageWithMarkUps(chatId, "\uD83D\uDC69\u200D⚕️\uD83D\uDC15" +
                     " Наши доверенные кинологи:", MarkUps.getPageDogHandler(page,
-                    dogHandlers));
+                    dogHandlers, prefix));
             return;
         }
         messageProvider.changeText(chatId, messageId, "\uD83D\uDC69\u200D⚕️\uD83D\uDC15" +
                 " Наши доверенные кинологи:");
         messageProvider.changeInline(chatId, messageId, MarkUps.getPageDogHandler(page,
-                dogHandlers));
+                dogHandlers, prefix));
     }
 
     /**
@@ -212,11 +232,11 @@ public class AnimalAdviceReactions {
      * @param messageId Идентификатор сообщения, которое будет изменено.
      * @param dogHandlerId Идентификатор кинолога, информацию о котором нужно вывести.
      */
-    public void infoAboutDogHandler(long chatId, int messageId, long dogHandlerId) {
+    public void infoAboutDogHandler(long chatId, int messageId, long dogHandlerId, String prefix) {
         DogHandler dogHandler = dogHandlerService.getDogHandler(dogHandlerId);
         if (dogHandler == null) {
             messageProvider.changeText(chatId, messageId, "Возникла Ошибка");
-            messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToDogHandlers 1"));
+            messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToDogHandlers 1", prefix));
             return;
         }
 
@@ -237,12 +257,12 @@ public class AnimalAdviceReactions {
 
         if (photoUrl == null) {
             messageProvider.changeText(chatId, messageId, info);
-            messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToDogHandlers 1"));
+            messageProvider.changeInline(chatId, messageId, MarkUps.backButton("backToDogHandlers 1", prefix));
             return;
         }
 
         messageProvider.deleteMessage(chatId, messageId);
-        messageProvider.sendPhoto(chatId, info, photoUrl, MarkUps.backButton("backToDogHandlersDel 1"));
+        messageProvider.sendPhoto(chatId, info, photoUrl, MarkUps.backButton("backToDogHandlersDel 1", prefix));
 
 
     }

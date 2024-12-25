@@ -3,6 +3,7 @@ package com.bot.pets_bot.services;
 import com.bot.pets_bot.models.dto.ShelterInfoDTO;
 import com.bot.pets_bot.models.entity.ShelterInfo;
 import com.bot.pets_bot.repositories.SheltersInfoRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,6 +51,8 @@ public class ShelterInfoService {
      * @param id Идентификатор приюта.
      * @return Объект ShelterInfo, если приют найден, иначе null.
      */
+
+    @Cacheable("shelterInfo")
     public ShelterInfo getShelterInfoById(long id) {
         return shelterInfoRepository.findById(id).orElse(null);
     }

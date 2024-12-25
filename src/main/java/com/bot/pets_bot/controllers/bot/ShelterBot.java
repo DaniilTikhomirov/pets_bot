@@ -11,17 +11,14 @@ import com.bot.pets_bot.models.dto.TelegramUserDTO;
 import com.bot.pets_bot.models.entity.*;
 import com.bot.pets_bot.services.*;
 import com.bot.pets_bot.telegram_utils.MessageProvider;
-import com.bot.pets_bot.telegram_utils.ModelsHelper;
 import com.bot.pets_bot.telegram_utils.StatesStorage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.*;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -36,9 +33,6 @@ public class ShelterBot extends TelegramLongPollingBot {
     private final TelegramUserService telegramUserService;
     private final MessageProvider messageProvider;
     private final VolunteersService volunteersService;
-    private final ShelterInfoService shelterInfoService;
-    private final AnimalService animalService;
-    private final DogHandlerService dogHandlerService;
     private final AdopterService adopterService;
     private final ReportsService reportsService;
     private final StatesStorage statesStorage;
@@ -51,33 +45,29 @@ public class ShelterBot extends TelegramLongPollingBot {
     /**
      * Конструктор для инициализации бота с необходимыми сервисами.
      *
-     * @param botConfig Конфигурация бота.
+     * @param botConfig           Конфигурация бота.
      * @param telegramUserService Сервис для работы с пользователями Telegram.
-     * @param messageProvider Провайдер сообщений для отправки сообщений пользователю.
-     * @param volunteersService Сервис для работы с волонтерами.
-     * @param shelterInfoService Сервис для получения информации о приюте.
-     * @param animalService Сервис для работы с животными.
-     * @param dogHandlerService Сервис для работы с кинологами.
-     * @param adopterService Сервис для работы с усыновителями.
-     * @param reportsService Сервис для работы с отчетами.
+     * @param messageProvider     Провайдер сообщений для отправки сообщений пользователю.
+     * @param volunteersService   Сервис для работы с волонтерами.
+     * @param adopterService      Сервис для работы с усыновителями.
+     * @param reportsService      Сервис для работы с отчетами.
      */
     public ShelterBot(BotConfig botConfig,
                       TelegramUserService telegramUserService,
                       MessageProvider messageProvider,
                       VolunteersService volunteersService,
-                      ShelterInfoService shelterInfoService,
-                      AnimalService animalService,
-                      DogHandlerService dogHandlerService,
                       AdopterService adopterService,
-                      ReportsService reportsService, StatesStorage statesStorage, ShelterInfoCallBack shelterInfoCallBack, AnimalsCallBack animalsCallBack, AnimalsAdviceCallBack animalsAdviceCallBack, VolunteersCallBack volunteersCallBack) {
+                      ReportsService reportsService,
+                      StatesStorage statesStorage,
+                      ShelterInfoCallBack shelterInfoCallBack,
+                      AnimalsCallBack animalsCallBack,
+                      AnimalsAdviceCallBack animalsAdviceCallBack,
+                      VolunteersCallBack volunteersCallBack) {
         super(botConfig.getBotToken());
         this.botConfig = botConfig;
         this.telegramUserService = telegramUserService;
         this.messageProvider = messageProvider;
         this.volunteersService = volunteersService;
-        this.shelterInfoService = shelterInfoService;
-        this.animalService = animalService;
-        this.dogHandlerService = dogHandlerService;
         this.adopterService = adopterService;
         this.reportsService = reportsService;
         this.statesStorage = statesStorage;
@@ -127,12 +117,20 @@ public class ShelterBot extends TelegramLongPollingBot {
             long chatId = update.getCallbackQuery().getMessage().getChatId();
 
             String[] call_split_data = callbackQuery.split(" ");
+            String prefix = call_split_data[0].split("\\|")[0];
+            call_split_data[0] = call_split_data[0].split("\\|")[1];
             log.info(Arrays.toString(call_split_data));
 
-            animalsCallBack.callback(chatId, messageId, call_split_data);
-            animalsAdviceCallBack.callback(chatId, messageId, call_split_data);
-            shelterInfoCallBack.callback(chatId, messageId, call_split_data);
-            volunteersCallBack.callback(chatId, messageId, call_split_data);
+            if(call_split_data[0].equals("dog") || call_split_data[0].equals("cat")){
+                messageProvider.changeInline(chatId, messageId, MarkUps.startMenu(prefix));
+            }else if(call_split_data[0].equals("backToStart")){
+                messageProvider.changeInline(chatId, messageId, MarkUps.catOrDog());
+            }
+
+            animalsCallBack.callback(chatId, messageId, call_split_data, prefix);
+            animalsAdviceCallBack.callback(chatId, messageId, call_split_data, prefix);
+            shelterInfoCallBack.callback(chatId, messageId, call_split_data, prefix);
+            volunteersCallBack.callback(chatId, messageId, call_split_data, prefix);
 
         }
         if (update.hasMessage() && update.getMessage().hasContact()) {
@@ -145,12 +143,6 @@ public class ShelterBot extends TelegramLongPollingBot {
     }
 
 
-
-
-
-
-
-
     private boolean checkingReport(long chat_id, List<Volunteers> volunteers, Message message) {
         if (volunteers.isEmpty()) {
             messageProvider.putMessage(chat_id, "Сейчас волонтеры отсутствуют! Мы это исправляем");
@@ -159,23 +151,23 @@ public class ShelterBot extends TelegramLongPollingBot {
 
         if (!message.hasPhoto()) {
             messageProvider.putMessage(chat_id, """
-                        В вашем отчете отсутствует фотография""");
+                    В вашем отчете отсутствует фотография""");
             return false;
         }
 
         if (message.getCaption() == null) {
             messageProvider.putMessage(chat_id, """
-                        В вашем отчете отсутствует информация\
-                        - *Описание рациона питания.*
-                        - *Общее самочувствие и адаптация к новому месту.*
-                        - *Изменения в поведении: отказ от старых привычек или появление новых.*""");
+                    В вашем отчете отсутствует информация\
+                    - *Описание рациона питания.*
+                    - *Общее самочувствие и адаптация к новому месту.*
+                    - *Изменения в поведении: отказ от старых привычек или появление новых.*""");
             return false;
         }
 
         return true;
     }
 
-    private void sendReport(long chat_id, Message message){
+    private void sendReport(long chat_id, Message message) {
         List<Volunteers> volunteers = volunteersService.getVolunteers();
 
         if (!checkingReport(chat_id, volunteers, message)) {
@@ -214,25 +206,13 @@ public class ShelterBot extends TelegramLongPollingBot {
                         adopter.getName(),
                         adopter.getContact(),
                         "acceptR " + reports.getId(),
-                        "rejectR " + reports.getId()));
+                        "rejectR " + reports.getId(), "report"));
 
-        if(photo != null){
+        if (photo != null) {
             messageProvider.putMessage(chat_id, "Отчет отправлен! Для продолжения напишите /start");
             statesStorage.getSendReport().remove(chat_id);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -244,7 +224,7 @@ public class ShelterBot extends TelegramLongPollingBot {
      * </p>
      *
      * @param chatId идентификатор чата
-     * @param name имя пользователя
+     * @param name   имя пользователя
      */
     private void startMessage(long chatId, String name) {
         if (telegramUserService.isNewUserByTelegramId(chatId)) {
@@ -256,7 +236,7 @@ public class ShelterBot extends TelegramLongPollingBot {
         }
 
         messageProvider.putMessageWithMarkUps(chatId, "Выберите нужный раздел",
-                MarkUps.startMenu(), true);
+                MarkUps.catOrDog(), true);
     }
 
     @Override

@@ -91,7 +91,7 @@ public class TelegramScheduler {
                         Нарушений: %s
                         """, o.getName(), o.getWarningCounter());
                 messageProvider.putMessageWithMarkUps(volunteer.getTelegramId(), info,
-                        MarkUps.addDaysOrAccept(o.getTelegramId(), o.getAnimal().getId()));
+                        MarkUps.addDaysOrAccept(o.getTelegramId(), o.getAnimal().getId(), "report"));
             }
 
             o.setSendReport(false);
